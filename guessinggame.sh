@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 
-if ! command -v bc > /dev/null 2>&1; then
-    echo "Error: 'bc' is not installed. Please install it to run this script."
-    exit 1
-fi
-
 count_all_items() {
     find . -mindepth 1 -maxdepth 1 | wc -l
+}
+
+is_less_than() {
+    local a="$1"
+    local b="$2"
+    a="${a#"${a%%[!0]*}"}"; a="${a:-0}"
+    b="${b#"${b%%[!0]*}"}"; b="${b:-0}"
+    if (( ${#a} < ${#b} )); then
+        return 0
+    elif (( ${#a} > ${#b} )); then
+        return 1
+    elif [[ "$a" < "$b" ]]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 play_game() {
@@ -25,9 +36,9 @@ play_game() {
         guess="${guess#"${guess%%[!0]*}"}"
         guess="${guess:-0}"
 
-        if [ "$(echo "$guess < $correct_count" | bc)" -eq 1 ]; then
+        if is_less_than "$guess" "$correct_count"; then
             echo "Too low. Try again."
-        elif [ "$(echo "$guess > $correct_count" | bc)" -eq 1 ]; then
+        elif is_less_than "$correct_count" "$guess"; then
             echo "Too high. Try again."
         else
             echo 'Congratulations! You guessed it!'
