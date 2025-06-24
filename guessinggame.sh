@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-count_items() {
-    find . -mindepth 1 -maxdepth 1 \( -type f -o -type d \) | wc -l
+count_all_items() {
+    find . -mindepth 1 -maxdepth 1 | wc -l
 }
 
 play_game() {
-    correct_count=$(count_items)
+    correct_count=$(count_all_items)
     echo "Welcome to the guessing game!"
-    echo "Guess how many files and directories (including hidden ones) are in the current directory:"
+    echo "Guess how many total items (of any type, including hidden) are in the current directory:"
 
     while true; do
         read -p "Your guess: " guess
@@ -17,14 +17,15 @@ play_game() {
             continue
         fi
 
-        guess=$((10#$guess))
+        guess="${guess#"${guess%%[!0]*}"}"
+        guess="${guess:-0}"
 
-        if (( guess < correct_count )); then
+        if [ "$(echo "$guess < $correct_count" | bc)" -eq 1 ]; then
             echo "Too low. Try again."
-        elif (( guess > correct_count )); then
+        elif [ "$(echo "$guess > $correct_count" | bc)" -eq 1 ]; then
             echo "Too high. Try again."
         else
-            echo "Congratulations! You guessed it!"
+            echo 'Congratulations! You guessed it!'
             break
         fi
     done
