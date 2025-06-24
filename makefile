@@ -10,4 +10,3 @@ readme.md:
 	@echo "" >> readme.md
 	@echo "## Number of lines of code in guessinggame.sh:" >> readme.md
 	@grep -vE '^\s*#|^\s*$$' guessinggame.sh | wc -l >> readme.md
-
