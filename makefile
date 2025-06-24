@@ -1,5 +1,4 @@
 .PHONY: readme.md
-
 readme.md:
 	@echo "# Guessing Game Project" > readme.md
 	@echo "" >> readme.md
