@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if ! command -v bc > /dev/null 2>&1; then
+    echo "Error: 'bc' is not installed. Please install it to run this script."
+    exit 1
+fi
+
 count_all_items() {
     find . -mindepth 1 -maxdepth 1 | wc -l
 }
